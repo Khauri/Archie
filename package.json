@@ -1,0 +1,8 @@
+{
+  "name": "archie",
+  "private": true,
+  "workspaces": [
+    "packages/*",
+    "archivers/*"
+  ]
+}

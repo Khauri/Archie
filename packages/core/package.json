@@ -1,0 +1,26 @@
+{
+  "name": "@archie/core",
+  "main": "src/index.ts",
+  "files": [
+    "dist"
+  ],
+  "type": "module",
+  "version": "0.0.1",
+  "scripts": {
+    "prepack": "clean-package",
+    "postpack": "clean-package restore",
+    "build": "swc"
+  },
+  "dependencies": {
+    "@archie/magnet": "*",
+    "inversify": "^6.0.1",
+    "puppeteer-chromium-resolver": "^19.1.0",
+    "puppeteer-core": "^19.5.2",
+    "urlpattern-polyfill": "^6.0.2"
+  },
+  "devDependencies": {
+    "@swc/core": "^1.3.26",
+    "clean-package": "^2.2.0",
+    "ts-node": "^10.9.1"
+  }
+}

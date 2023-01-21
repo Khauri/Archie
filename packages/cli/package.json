@@ -1,0 +1,28 @@
+{
+  "name": "archie",
+  "version": "0.0.1",
+  "description": "A cli for internet archiving",
+  "type": "module",
+  "bin": {
+    "archie-dev": "./bin/test.js",
+    "archie": "./bin/index.js"
+  },
+  "scripts": {
+    "start": "ts-node src/index.tsx",
+    "show": "ts-node --showConfig"
+  },
+  "dependencies": {
+    "@archie/core": "*",
+    "commander": "^10.0.0",
+    "ink": "^3.2.0",
+    "react": "^18.2.0",
+    "zod": "^3.20.2"
+  },
+  "devDependencies": {
+    "@swc/core": "^1.3.26",
+    "clean-package": "^2.2.0",
+    "ts-node": "^10.9.1",
+    "tsconfig-paths": "^4.1.2",
+    "typescript": "^4.9.4"
+  }
+}

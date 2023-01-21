@@ -1,0 +1,26 @@
+{
+  "compilerOptions": {
+    "module": "esnext",
+    "target": "esnext",
+    "moduleResolution": "node",
+    "declaration": true,
+    "composite": true,
+    // so that if your project isn't using TypeScript, it still has autocomplete
+    "allowJs": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "allowSyntheticDefaultImports": true,
+    "jsx": "react",
+    "paths": {
+      "@archie/*": ["./packages/*/src"]
+    },
+  },
+  "include": ["packages/"],
+  "exclude": ["node_modules/", "packages/*/dist/"],
+  "ts-node": {
+    "experimentalSpecifierResolution": "node",
+    "swc": true,
+    "esm": true,
+    "require": ["tsconfig-paths/register"]
+  }
+}
