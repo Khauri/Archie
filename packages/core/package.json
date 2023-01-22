@@ -13,9 +13,12 @@
   },
   "dependencies": {
     "@archie/magnet": "*",
+    "@types/superagent": "^4.1.16",
     "inversify": "^6.0.1",
     "puppeteer-chromium-resolver": "^19.1.0",
     "puppeteer-core": "^19.5.2",
+    "reflect-metadata": "^0.1.13",
+    "superagent": "^8.0.8",
     "urlpattern-polyfill": "^6.0.2"
   },
   "devDependencies": {

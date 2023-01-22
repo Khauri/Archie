@@ -2,6 +2,7 @@
   "compilerOptions": {
     "module": "esnext",
     "target": "esnext",
+    "lib": ["es6"],
     "moduleResolution": "node",
     "declaration": true,
     "composite": true,
@@ -11,6 +12,7 @@
     "emitDecoratorMetadata": true,
     "allowSyntheticDefaultImports": true,
     "jsx": "react",
+    "types": ["reflect-metadata"],
     "paths": {
       "@archie/*": ["./packages/*/src"]
     },

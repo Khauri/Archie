@@ -1,8 +1,11 @@
 import path from 'path';
+import inversify from 'inversify';
 import {createModuleLoader, ModuleLoader} from '@archie/magnet';
 import 'urlpattern-polyfill';
+
 import {resolveConfig, ArchieConfig} from './config';
 import {ThreadArchiver} from './Archiver';
+import {CheapArchiverModules} from './services/modules';
 
 type ConfigOptions = {
   baseDir?: string;
@@ -26,6 +29,12 @@ export class Archie {
   moduleLoader: ModuleLoader<ArchieModule>;
 
   config: ArchieConfig;
+
+  private setupContainer() {
+    const container = new inversify.Container();
+    container.load(CheapArchiverModules);
+    return container;
+  }
   
   async init(configOptions: ConfigOptions = {}) {
     this.config = await resolveConfig({
@@ -59,9 +68,12 @@ export class Archie {
       if(!plugin.isLoaded) {
         await this.moduleLoader.load((plugin as any).pkgJson.name);
       }
+      const container = this.setupContainer();
+      inversify.decorate(inversify.injectable(), plugin.module.default);
+      const archiverPlugin = container.resolve(plugin.module.default);
       switch(plugin.manifest.type.toLowerCase()) {
         case 'thread':
-          const archiver = new (plugin.module.default as any)() as ThreadArchiver;
+          const archiver = archiverPlugin as ThreadArchiver;
           archiver.archive({source: request.source});
           break;
         default:
