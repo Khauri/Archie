@@ -1,0 +1,138 @@
+// TODO: Need to make one of these for each supported database (for now this is sqlite for local and postgres for prod)
+// Then run prisma generate --schema path/to/schema.prisma for each one?
+// The generated model will look the same for each client, so we can just pick one to use as the interface
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/clients/psql"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  userId                  Int                      @id @default(autoincrement())
+  handle                  String                   @unique
+  displayName             String?
+  links                   String                   @default("[]")
+  threadsAuthored         Thread[]                 @relation("ThreadsAuthored")
+  // Not really used but throws an error if not included
+  threadsParticipating    ThreadParticipant[]
+  publicationsContributed PublicationContributor[]
+}
+
+model Thread {
+  threadId        Int                 @id @default(autoincrement())
+  source          String              @unique
+  parentThreadId  Int?
+  rootThreadId    Int?
+  threadOrigin    String?
+  content         String?
+  // sqlite doesn't support JSON so we store it as a string
+  metadata        String              @default("{}")
+  createdAt       DateTime            @default(now())
+  lastUpdatedAt   DateTime            @default(now())
+  numViews        Int                 @default(0)
+  numReplies      Int                 @default(0)
+  numLikes        Int                 @default(0)
+  numDislikes     Int                 @default(0)
+  numReactions    Int                 @default(0)
+  numInteractions Int                 @default(0)
+  authorId        Int
+  isRoot          Boolean             @default(false)
+  isDeleted       Boolean             @default(false)
+  isLocked        Boolean             @default(false)
+  author          User                @relation("ThreadsAuthored", fields: [authorId], references: [userId])
+  parentThread    Thread?             @relation("RepliesInThread", fields: [parentThreadId], references: [threadId])
+  replies         Thread[]            @relation("RepliesInThread")
+  rootThread      Thread?             @relation("RepliesInTopic", fields: [rootThreadId], references: [threadId])
+  paricipants     ThreadParticipant[]
+  // This probably won't be used much, but it's here for completeness
+  conversation    Thread[]            @relation("RepliesInTopic")
+}
+
+model ThreadParticipant {
+  threadId Int
+  userId   Int
+  thread   Thread @relation(fields: [threadId], references: [threadId])
+  user     User   @relation(fields: [userId], references: [userId])
+
+  @@id([threadId, userId])
+}
+
+/// Represents an archived file (image, video, audio, binary, text file, archive, etc.)
+model File {
+  fileId      Int      @id @default(autoincrement())
+  source      String   @unique
+  /// Enum: image, video, audio, binary, text, archive, other
+  type        String
+  /// A path, URL, or data URI to the file
+  destination String
+  /// The name of the file, may be necessary if the file is a data uri or blob
+  name        String
+  /// An optional description of the media, e.g. alt text for images
+  description String?
+  mime        String
+  tags        String   @default("[]")
+  metadata    String   @default("{}")
+  /// Params used to store the media. E.g. width, height, encoding, compression
+  /// Either as JSON, query string format (?width=100&height=100), or cli arg format (--width=100 --height=100)
+  params      String
+  createdAt   DateTime @default(now())
+}
+
+/// A publication represents a blog, book, comic, etc.
+/// It will either be a collection of chapters or a collection of pages
+model Publication {
+  publicationId Int      @id @default(autoincrement())
+  source        String   @unique
+  name          String
+  summary       String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @default(now())
+  /// The status of the publication. E.g. ONGOING, COMPLETED, CANCELLED, etc.
+  status        String   @default("ONGOING")
+
+  contributors PublicationContributor[]
+  chapters     PublicationChapter[]
+  pages        PublicationChapterPage[]
+}
+
+model PublicationChapter {
+  chapterId     Int       @id @default(autoincrement())
+  publicationId Int
+  source        String    @unique
+  title         String
+  summary       String?
+  publishedAt   DateTime?
+
+  publication Publication              @relation(fields: [publicationId], references: [publicationId])
+  pages       PublicationChapterPage[]
+
+  @@unique([source, publicationId])
+}
+
+model PublicationChapterPage {
+  pageId        Int                 @id @default(autoincrement())
+  chapterId     Int?
+  publicationId Int
+  source        String              @unique
+  content       String?
+  chapter       PublicationChapter? @relation(fields: [chapterId], references: [chapterId])
+  publication   Publication         @relation(fields: [publicationId], references: [publicationId])
+
+  @@unique([source, chapterId])
+}
+
+model PublicationContributor {
+  publicationId Int
+  userId        Int
+  /// Example: author, artist, editor, etc:
+  role          String
+  publication   Publication @relation(fields: [publicationId], references: [publicationId])
+  user          User        @relation(fields: [userId], references: [userId])
+
+  @@id([publicationId, userId, role])
+}

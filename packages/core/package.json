@@ -13,8 +13,10 @@
   },
   "dependencies": {
     "@archie/magnet": "*",
+    "@prisma/client": "^4.9.0",
     "@types/superagent": "^4.1.16",
     "inversify": "^6.0.1",
+    "prisma": "^4.9.0",
     "puppeteer-chromium-resolver": "^19.1.0",
     "puppeteer-core": "^19.5.2",
     "reflect-metadata": "^0.1.13",

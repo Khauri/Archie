@@ -33,7 +33,7 @@ export class BrowserService {
       // Though we may run into an issue where the browser's lifecycle is managed
       const {puppeteer, executablePath} = PCR.getStats() as {puppeteer: PuppeteerNode, executablePath: string};
       this.puppeteer = puppeteer;
-      this.browser = await puppeteer.launch({executablePath, headless: false});
+      this.browser = await puppeteer.launch({executablePath, headless: true});
       this.browser.on('close', () => {
         // The browser has been closed so we may need to re-open it
         this.browser = null;

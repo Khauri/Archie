@@ -1,0 +1,25 @@
+// TODO: Need to make one of these for each supported database (for now this is sqlite for local and postgres for prod)
+// Then run prisma generate --schema path/to/schema.prisma for each one?
+// The generated model will look the same for each client, so we can just pick one to use as the interface
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/clients/psql"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id    Int     @id @default(autoincrement())
+  email String  @unique
+  name  String?
+}
+
+model Thread {
+  id Int @id @default(autoincrement())
+  source String
+  
+}

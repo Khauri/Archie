@@ -99,7 +99,7 @@ This can be useful for processing a thread as code and formatting it however you
     "numDislikes": 1, // null when not supported
     "numReactions": 11, // likes + dislikes
     "numInteractions": 12, // reactions + comments
-    "user": {
+    "author": {
         "displayName": "Dirty Dan",
         "handle": "@dirtydan",
         "userId": "@dirtydan"
