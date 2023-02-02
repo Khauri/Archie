@@ -1,6 +1,11 @@
 # Archie
 
-Archie is an open-source archiver for thread-like websites (twitter, reddit, hackernews, youtube, tumblr, disqus), publications (articles, comics, blogs), and media (images, videos).
+Archie is an open-source, *personal*, plugin-based, structured data archiver for 
+
+- Thread-like websites (twitter, reddit, hackernews, youtube, tumblr, disqus) 
+- Publications (articles, comics, blogs)
+- Listings (amazon, walmart)
+- and Media (images, videos)
 
 Archie was created for the purpose of collecting data for machine learning but can be used to generally archive any kind of public resource that has an available plugin (or you can write your own).
 
@@ -73,6 +78,19 @@ archie server --port 5050 --workers 3 --no-media
 
 This effectively lets you queue and query archive requests using the same commands from above. You can also issue http requests to the port using cURL. In the future we may make the middleware available so that the server can be attached to an existing web application interface.
 
+#### Archie watch
+
+To watch for changes on a page
+
+```sh
+archie watch "https://amazon.com/" --field product.price --field product.stock --interval 1m [--duration 90m]
+```
+
+By default this will simply output the change, but it can be configured to spawn a script by passing the script in after `--`. 
+
+```sh
+archie watch "https://amazon.com/product" --field product.price -- "osascript -e 'display notification \"The price of the product has changed!\" with title \"Price Changed\"'"
+```
 
 ## Thread Formats
 

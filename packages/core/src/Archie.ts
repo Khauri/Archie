@@ -6,6 +6,8 @@ import 'urlpattern-polyfill';
 import {resolveConfig, ArchieConfig} from './config';
 import {ThreadArchiver} from './Archiver';
 import {CheapArchiverModules} from './services/modules';
+import {parseExtractionRuleString} from './extractor';
+import { Extract } from './Extract';
 
 type ConfigOptions = {
   baseDir?: string;
@@ -22,6 +24,7 @@ type ArchieModule = {
 type ArchiveRequest = {
   source: string,
   type?: string,
+  extract?: string[],
 }
 
 export class Archie {
@@ -56,7 +59,8 @@ export class Archie {
     if(!request.source) {
       throw new Error('Source is required');
     }
-    // get modules matching source
+
+    // get modules matching the source
     const plugins = this.moduleLoader.filterModules((plugin) => {
       return plugin.manifest.matches.some((match) => {
         // Builtin types seem to be wrong here? UrlPatternInput should allow strings but doesn't
@@ -64,6 +68,18 @@ export class Archie {
         return pattern.test(request.source as any); 
       });
     });
+    if(request.extract) {
+      plugins.push(
+        {
+          module: { default: Extract },
+          manifest: { type: 'extract', name: 'extract', version: '0.0.1', matches: ['*'] },
+          isLoaded: true,
+          pkgJson: { name: '@archie/extract' },
+          path: '$builtin'
+        }
+      );
+    }
+
     for(const plugin of plugins) {
       if(!plugin.isLoaded) {
         await this.moduleLoader.load((plugin as any).pkgJson.name);
@@ -74,12 +90,23 @@ export class Archie {
       switch(plugin.manifest.type.toLowerCase()) {
         case 'thread':
           const archiver = archiverPlugin as ThreadArchiver;
-          archiver.archive({source: request.source});
+          await archiver.archive({source: request.source});
+          break;
+        case 'extract':
+          const extractor = archiverPlugin as any;
+              // Pass to the extractor
+          const rules = request.extract.map((rule) => {
+            return parseExtractionRuleString(rule);
+          });
+          const result = await extractor.extract({source: request.source, rules});
+          console.log(result);
           break;
         default:
           throw new Error(`Unknown module type: ${plugin.manifest.type}`);
       }
     }
+    // Remove this later
+    process.exit();
   }
 
   async archive(...requests: (ArchiveRequest | ArchiveRequest[])[]) {

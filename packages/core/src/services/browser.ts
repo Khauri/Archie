@@ -33,7 +33,7 @@ export class BrowserService {
       // Though we may run into an issue where the browser's lifecycle is managed
       const {puppeteer, executablePath} = PCR.getStats() as {puppeteer: PuppeteerNode, executablePath: string};
       this.puppeteer = puppeteer;
-      this.browser = await puppeteer.launch({executablePath, headless: true});
+      this.browser = await puppeteer.launch({executablePath, headless: process.env.HEADLESS !== 'false'});
       this.browser.on('close', () => {
         // The browser has been closed so we may need to re-open it
         this.browser = null;
@@ -65,6 +65,9 @@ export class BrowserService {
   }
 }
 
+type PageOptions = {
+  userAgent?: string;
+}
 // represents a single page unique to the request
 @injectable()
 export class PageService {
@@ -72,10 +75,13 @@ export class PageService {
   @inject(BrowserService)
   private browser: BrowserService;
 
-  async open(url: string) {
+  async open(url: string, {userAgent}: PageOptions = {}) {
     // This should probably warn/prevent extensions from opening pages on unacceptable domains for the archiver.
     // Each archiver should also be allowed to specify a profile to use.
     const page = await this.browser.page();
+    if(userAgent) {
+      await page.setUserAgent(userAgent);
+    }
     await page.goto(url);
     return page;
   }
