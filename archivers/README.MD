@@ -8,6 +8,8 @@ The archivers abide by the website's ToS as well as legal regulations, which gen
 New archivers should be added to the `archivers` directory.
 In general a archiver is a mini js lib that exports a class conforming matching the archiver interface.
 
+In the future, archivers can be written in any language that can compile to WASM such as rust or assemblyscript. In essense, a plugin's job is to issue commands to a web driver and return
+
 There are two types of archivers, `ThreadArchiver` and `MediaArchiver`. A MediaArchiver's sole purposes is to resolve the media in a thread
 
 It is preferable to use typescript during development. In a new directory copy-and-pase the following into a `package.json` file.

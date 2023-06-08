@@ -89,9 +89,51 @@ Prisma.NullTypes = {
 // https://github.com/microsoft/TypeScript/issues/3192#issuecomment-261720275
 function makeEnum(x) { return x; }
 
-exports.Prisma.QueryMode = makeEnum({
-  default: 'default',
-  insensitive: 'insensitive'
+exports.Prisma.FileScalarFieldEnum = makeEnum({
+  fileId: 'fileId',
+  source: 'source',
+  type: 'type',
+  destination: 'destination',
+  name: 'name',
+  description: 'description',
+  mime: 'mime',
+  tags: 'tags',
+  metadata: 'metadata',
+  params: 'params',
+  createdAt: 'createdAt'
+});
+
+exports.Prisma.PublicationChapterPageScalarFieldEnum = makeEnum({
+  pageId: 'pageId',
+  chapterId: 'chapterId',
+  publicationId: 'publicationId',
+  source: 'source',
+  content: 'content'
+});
+
+exports.Prisma.PublicationChapterScalarFieldEnum = makeEnum({
+  chapterId: 'chapterId',
+  publicationId: 'publicationId',
+  source: 'source',
+  title: 'title',
+  summary: 'summary',
+  publishedAt: 'publishedAt'
+});
+
+exports.Prisma.PublicationContributorScalarFieldEnum = makeEnum({
+  publicationId: 'publicationId',
+  userId: 'userId',
+  role: 'role'
+});
+
+exports.Prisma.PublicationScalarFieldEnum = makeEnum({
+  publicationId: 'publicationId',
+  source: 'source',
+  name: 'name',
+  summary: 'summary',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  status: 'status'
 });
 
 exports.Prisma.SortOrder = makeEnum({
@@ -99,28 +141,54 @@ exports.Prisma.SortOrder = makeEnum({
   desc: 'desc'
 });
 
+exports.Prisma.ThreadParticipantScalarFieldEnum = makeEnum({
+  threadId: 'threadId',
+  userId: 'userId'
+});
+
 exports.Prisma.ThreadScalarFieldEnum = makeEnum({
-  id: 'id',
-  source: 'source'
+  threadId: 'threadId',
+  source: 'source',
+  parentThreadId: 'parentThreadId',
+  rootThreadId: 'rootThreadId',
+  threadOrigin: 'threadOrigin',
+  content: 'content',
+  metadata: 'metadata',
+  createdAt: 'createdAt',
+  lastUpdatedAt: 'lastUpdatedAt',
+  numViews: 'numViews',
+  numReplies: 'numReplies',
+  numLikes: 'numLikes',
+  numDislikes: 'numDislikes',
+  numReactions: 'numReactions',
+  numInteractions: 'numInteractions',
+  authorId: 'authorId',
+  isRoot: 'isRoot',
+  isDeleted: 'isDeleted',
+  isLocked: 'isLocked'
 });
 
 exports.Prisma.TransactionIsolationLevel = makeStrictEnum({
-  ReadUncommitted: 'ReadUncommitted',
-  ReadCommitted: 'ReadCommitted',
-  RepeatableRead: 'RepeatableRead',
   Serializable: 'Serializable'
 });
 
 exports.Prisma.UserScalarFieldEnum = makeEnum({
-  id: 'id',
-  email: 'email',
-  name: 'name'
+  userId: 'userId',
+  handle: 'handle',
+  displayName: 'displayName',
+  links: 'links'
 });
 
 
 exports.Prisma.ModelName = makeEnum({
   User: 'User',
-  Thread: 'Thread'
+  Thread: 'Thread',
+  ThreadParticipant: 'ThreadParticipant',
+  File: 'File',
+  Publication: 'Publication',
+  PublicationChapter: 'PublicationChapter',
+  PublicationChapterPage: 'PublicationChapterPage',
+  PublicationContributor: 'PublicationContributor'
 });
 
 /**

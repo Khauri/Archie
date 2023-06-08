@@ -1,13 +1,13 @@
 # Archie
 
-Archie is an open-source, *personal*, plugin-based, structured data archiver for 
+Archie is an open-source, *personal*, pluggable, structured data archiver for 
 
 - Thread-like websites (twitter, reddit, hackernews, youtube, tumblr, disqus) 
 - Publications (articles, comics, blogs)
 - Listings (amazon, walmart)
 - and Media (images, videos)
 
-Archie was created for the purpose of collecting data for machine learning but can be used to generally archive any kind of public resource that has an available plugin (or you can write your own).
+Archie was created for the purpose of collecting data for machine learning but can be used to generally archive any kind of public resource for scientific or data hoarding purposes.
 
 Archive data is saved in structured sqlite format and can be transformed into other formats.
 
