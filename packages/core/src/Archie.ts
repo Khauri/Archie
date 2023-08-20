@@ -3,8 +3,8 @@ import inversify from 'inversify';
 import {createModuleLoader, ModuleLoader} from '@archie/magnet';
 import 'urlpattern-polyfill';
 
-import {resolveConfig, ArchieConfig} from './config';
-import {ThreadArchiver} from './Archiver';
+import {resolveConfig, saveConfig, ArchieConfig, ConfigSchema} from './config';
+import {MediaArchiver, ThreadArchiver} from './Archiver';
 import {CheapArchiverModules} from './services/modules';
 import {parseExtractionRuleString} from './extractor';
 import { Extract } from './Extract';
@@ -33,6 +33,8 @@ export class Archie {
 
   config: ArchieConfig;
 
+  configFile: string;
+
   private setupContainer() {
     const container = new inversify.Container();
     container.load(CheapArchiverModules);
@@ -40,13 +42,22 @@ export class Archie {
   }
   
   async init(configOptions: ConfigOptions = {}) {
-    this.config = await resolveConfig({
-      baseDir: configOptions.baseDir,
+    const {config, configFile} = await resolveConfig({
+      baseDir: configOptions.baseDir ?? '~/.archie',
     });
+    this.config = config;
+    this.configFile = configFile ?? '~/.archie/archie.config.json';
     this.moduleLoader = await createModuleLoader<ArchieModule>({
       dataDir: path.join(this.config.dataDir, 'plugins'),
+      localRepositories: this.config.localRepositories as string[],
       defaultNamespace: '@archie'
     });
+  }
+
+  configure(config: Partial<ArchieConfig>) {
+    Object.assign(this.config, ConfigSchema.parse(config));
+    // Save config
+    saveConfig(this.config, this.configFile);
   }
 
   async install(plugins: string[], onProgress) {
@@ -59,13 +70,16 @@ export class Archie {
     if(!request.source) {
       throw new Error('Source is required');
     }
+    // Kinda of an annoying issue where URLPattern doesn't like query or hash...
+    const url = new URL(request.source);
+    const urlWithoutQueryOrHash = `${url.origin}${url.pathname}`;
 
     // get modules matching the source
     const plugins = this.moduleLoader.filterModules((plugin) => {
       return plugin.manifest.matches.some((match) => {
         // Builtin types seem to be wrong here? UrlPatternInput should allow strings but doesn't
         const pattern = new URLPattern(match as any);
-        return pattern.test(request.source as any); 
+        return pattern.test(urlWithoutQueryOrHash as any); 
       });
     });
     if(request.extract) {
@@ -100,6 +114,10 @@ export class Archie {
           });
           const result = await extractor.extract({source: request.source, rules});
           console.log(result);
+          break;
+        case 'media':
+          const mediaExtractor = archiverPlugin as MediaArchiver;
+          await mediaExtractor.archive({source: request.source});
           break;
         default:
           throw new Error(`Unknown module type: ${plugin.manifest.type}`);

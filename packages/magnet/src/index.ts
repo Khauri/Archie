@@ -107,11 +107,28 @@ export class ModuleLoader<ManifestType = {}> {
     // TODO
   }
 
+  async installRemotePackage() {
+    // TODO
+  }
+
   async install(moduleIdentifier: string) {
     const type = resolveModuleType(moduleIdentifier);
     if(type.type === 'local') {
       const absPath = p.resolve(type.path);
       return this.installLocalModule(absPath);
+    }
+    if(type.type === 'package') {
+      if(!type.namespace) {
+        // Try to install from a local "repository"
+        const {localRepositories} = this.config;
+        const locations = localRepositories.map((repo) => p.join(repo, moduleIdentifier));
+        const firstToExist = locations.find(loc => existsSync(loc));
+        if(firstToExist) {
+          return this.installLocalModule(firstToExist);
+        }
+        type.namespace = this.config.defaultNamespace;
+      }
+      return this.installRemotePackage()
     }
     return null;
   }

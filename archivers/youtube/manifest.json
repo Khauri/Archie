@@ -1,0 +1,8 @@
+{
+  "type": "Media",
+  "matches": [
+    "https://youtu.be/*",
+    "https://www.youtube.com/*",
+    "https://m.youtube.com/*"
+  ]
+}

@@ -56,7 +56,7 @@ export function resolveModuleType(input: string): ModuleType {
     }
     return {type: 'remote', href: input};
   }
-  // Assume it's a remote package at this point
+  // Assume it's a local or remote package at this point
   const [namespace, pkgName = namespace] = input.split('/');
   return {
     type: 'package', 

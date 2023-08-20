@@ -16,7 +16,11 @@ function Installer({packages}) {
     // TODO: this should probably return a stream for stdout
     archie.install(packages, (progress) => {setProgress(progress)});
   }, []);
-  return <Text>Installing {packages.join(', ')}</Text>
+  return (
+    <>
+      <Text>Installing {packages.join(', ')}</Text>
+    </>
+  );
 }
 
 export default function Install() {

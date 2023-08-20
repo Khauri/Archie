@@ -80,7 +80,7 @@ const regularDirname = hasDirname && fs.existsSync(path.join(__dirname, 'schema.
 
 // if the client has been bundled, we need to look for the folders
 const foundDirname = !regularDirname && findSync(process.cwd(), [
-    "packages/core/src/clients/psql",
+    "../core/src/clients/psql",
     "core/src/clients/psql",
 ], ['d'], ['d'], 1)[0]
 
@@ -210,7 +210,7 @@ const config = {
       "value": "prisma-client-js"
     },
     "output": {
-      "value": "/workspaces/Archie/packages/core/src/clients/psql",
+      "value": "/Users/khauri/Documents/projects/Archie/packages/core/src/clients/psql",
       "fromEnvVar": null
     },
     "config": {
@@ -249,7 +249,7 @@ const PrismaClient = getPrismaClient(config)
 exports.PrismaClient = PrismaClient
 Object.assign(exports, Prisma)
 
-path.join(__dirname, "libquery_engine-debian-openssl-1.1.x.so.node");
-path.join(process.cwd(), "packages/core/src/clients/psql/libquery_engine-debian-openssl-1.1.x.so.node")
+path.join(__dirname, "libquery_engine-darwin-arm64.dylib.node");
+path.join(process.cwd(), "../core/src/clients/psql/libquery_engine-darwin-arm64.dylib.node")
 path.join(__dirname, "schema.prisma");
-path.join(process.cwd(), "packages/core/src/clients/psql/schema.prisma")
+path.join(process.cwd(), "../core/src/clients/psql/schema.prisma")
