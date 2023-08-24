@@ -1,5 +1,6 @@
 {
   "type": "Media",
+  "name": "YouTube",
   "matches": [
     "https://youtu.be/*",
     "https://www.youtube.com/*",

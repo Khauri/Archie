@@ -9,6 +9,7 @@ const defaultDataDir = path.join(homeDir, '.archie');
 export const ConfigSchema = z.object({
   dataDir: z.string().optional().default(defaultDataDir).describe('The directory where Archie will store data and install plugins'),
   localRepositories: z.array(z.string()).or(z.string()).optional().default([]).describe('A list of absolute paths to local repositories to search for plugins when installing'),
+  outputPattern: z.string().optional().default('/[archiver]/[date]/[name_hash].[ext]')
 });
 
 export type ArchieConfig = z.infer<typeof ConfigSchema>;
